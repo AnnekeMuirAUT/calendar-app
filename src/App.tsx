@@ -7,6 +7,10 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
+import Button from "@mui/material/Button";
+import DeleteIcon from "@mui/icons-material/Delete";
+import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
+import EditCalendarIcon from "@mui/icons-material/EditCalendar";
 
 function createData(
   date: string,
@@ -35,6 +39,7 @@ function App() {
                 <TableCell>Start</TableCell>
                 <TableCell>End</TableCell>
                 <TableCell>Event name</TableCell>
+                <TableCell></TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -44,6 +49,15 @@ function App() {
                   <TableCell>{row.start}</TableCell>
                   <TableCell>{row.end}</TableCell>
                   <TableCell>{row.eventName}</TableCell>
+                  <TableCell>
+                    <Button
+                      variant="outlined"
+                      color="error"
+                      startIcon={<DeleteIcon />}
+                    >
+                      Delete
+                    </Button>
+                  </TableCell>
                 </TableRow>
               ))}
               <TableRow>
@@ -59,12 +73,23 @@ function App() {
                 <TableCell>
                   <input type="text" placeholder="Event name" />
                 </TableCell>
+                <TableCell>
+                  <Button
+                    variant="outlined"
+                    color="success"
+                    startIcon={<AddCircleOutlineIcon />}
+                  >
+                    Add
+                  </Button>
+                </TableCell>
               </TableRow>
             </TableBody>
           </Table>
         </TableContainer>
-
-        <button>Add Event</button>
+        <br />
+        <Button variant="contained" startIcon={<EditCalendarIcon />}>
+          Create events
+        </Button>
       </div>
     </>
   );
