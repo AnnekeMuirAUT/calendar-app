@@ -36,6 +36,10 @@ function App() {
     createEvent(2, "2025-07-12", "12:00", "13:00", "Doctor appointment"),
   ]);
   const nextId = React.useRef(3); // start at 3 as test data has 2 events
+  const [date, setDate] = React.useState<string>("");
+  const [startTime, setStartTime] = React.useState<string>("");
+  const [endTime, setEndTime] = React.useState<string>("");
+  const [eventName, setEventName] = React.useState<string>("");
 
   function handleDeleteEvent(id: number) {
     setRows((prev) => prev.filter((row) => row.id !== id));
@@ -44,11 +48,16 @@ function App() {
   const handleAddEvent = () => {
     const newEvent: EventData = {
       id: nextId.current,
-      date: "2025-07-13",
-      start: "09:00",
-      end: "10:00",
-      eventName: "New Event",
+      date: date,
+      start: startTime,
+      end: endTime,
+      eventName: eventName,
     };
+    // reset input fields after adding the event
+    setDate("");
+    setStartTime("");
+    setEndTime("");
+    setEventName("");
     setRows((prev) => [...prev, newEvent]);
     nextId.current += 1; // increment the id counter
   };
@@ -89,16 +98,33 @@ function App() {
               ))}
               <TableRow>
                 <TableCell>
-                  <input type="date" />
+                  <input
+                    type="date"
+                    value={date}
+                    onChange={(e) => setDate(e.target.value)}
+                  />
                 </TableCell>
                 <TableCell>
-                  <input type="time" />
+                  <input
+                    type="time"
+                    value={startTime}
+                    onChange={(e) => setStartTime(e.target.value)}
+                  />
                 </TableCell>
                 <TableCell>
-                  <input type="time" />
+                  <input
+                    type="time"
+                    value={endTime}
+                    onChange={(e) => setEndTime(e.target.value)}
+                  />
                 </TableCell>
                 <TableCell>
-                  <input type="text" placeholder="Event name" />
+                  <input
+                    type="text"
+                    placeholder="Event name"
+                    value={eventName}
+                    onChange={(e) => setEventName(e.target.value)}
+                  />
                 </TableCell>
                 <TableCell>
                   <Button
