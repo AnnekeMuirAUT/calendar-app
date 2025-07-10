@@ -25,7 +25,9 @@ a:hover {
 body {
   margin: 0;
   display: flex;
-  place-items: center;
+  flex-direction: column; /* stack children vertically */
+  align-items: center;    /* center horizontally */
+  justify-content: center; /* center vertically */
   min-width: 320px;
   min-height: 100vh;
 }
