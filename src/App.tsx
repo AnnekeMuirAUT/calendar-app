@@ -12,20 +12,46 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import EditCalendarIcon from "@mui/icons-material/EditCalendar";
 
-function createData(
+interface EventData {
+  id: number;
+  date: string;
+  start: string;
+  end: string;
+  eventName: string;
+}
+
+function createEvent(
+  id: number,
   date: string,
   start: string,
   end: string,
   eventName: string
 ) {
-  return { date, start, end, eventName };
+  return { id, date, start, end, eventName } as EventData;
 }
 
 function App() {
-  const rows = [
-    createData("2023-10-01", "10:00", "11:00", "Meeting with team"),
-    createData("2023-10-02", "12:00", "13:00", "Doctor appointment"),
-  ];
+  const [rows, setRows] = React.useState<EventData[]>([
+    createEvent(1, "2025-07-11", "10:00", "11:00", "Meeting with team"),
+    createEvent(2, "2025-07-12", "12:00", "13:00", "Doctor appointment"),
+  ]);
+  const nextId = React.useRef(3); // start at 3 as test data has 2 events
+
+  function handleDeleteEvent(id: number) {
+    setRows((prev) => prev.filter((row) => row.id !== id));
+  }
+
+  const handleAddEvent = () => {
+    const newEvent: EventData = {
+      id: nextId.current,
+      date: "2025-07-13",
+      start: "09:00",
+      end: "10:00",
+      eventName: "New Event",
+    };
+    setRows((prev) => [...prev, newEvent]);
+    nextId.current += 1; // increment the id counter
+  };
 
   return (
     <>
@@ -54,6 +80,7 @@ function App() {
                       variant="outlined"
                       color="error"
                       startIcon={<DeleteIcon />}
+                      onClick={() => handleDeleteEvent(row.id)}
                     >
                       Delete
                     </Button>
@@ -78,6 +105,7 @@ function App() {
                     variant="outlined"
                     color="success"
                     startIcon={<AddCircleOutlineIcon />}
+                    onClick={() => handleAddEvent()}
                   >
                     Add
                   </Button>
