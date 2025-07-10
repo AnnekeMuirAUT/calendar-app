@@ -39,19 +39,32 @@ function App() {
             </TableHead>
             <TableBody>
               {rows.map((row, key) => (
-                <TableRow
-                  key={key}
-                  sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-                >
+                <TableRow key={key}>
                   <TableCell>{row.date}</TableCell>
                   <TableCell>{row.start}</TableCell>
                   <TableCell>{row.end}</TableCell>
                   <TableCell>{row.eventName}</TableCell>
                 </TableRow>
               ))}
+              <TableRow>
+                <TableCell>
+                  <input type="date" />
+                </TableCell>
+                <TableCell>
+                  <input type="time" />
+                </TableCell>
+                <TableCell>
+                  <input type="time" />
+                </TableCell>
+                <TableCell>
+                  <input type="text" placeholder="Event name" />
+                </TableCell>
+              </TableRow>
             </TableBody>
           </Table>
         </TableContainer>
+
+        <button>Add Event</button>
       </div>
     </>
   );
