@@ -41,6 +41,64 @@ app.get('/auth/callback', async (req, res) => {
     }
 })
 
+app.post('/create-events', async (req, res) => {
+    const { events } = req.body;
+    if (!events || !Array.isArray(events) || events.length === 0) {
+        return res.status(400).json({ error: 'No events provided' });
+    }
+
+    try {
+        oAuth2Client.setCredentials({
+            refresh_token: process.env.REFRESH_TOKEN // use the refresh token to set credentials
+        });
+
+        const calendar = google.calendar({version: 'v3', auth: oAuth2Client});
+
+        const createdLinks = [];
+
+        for (const event of events) {
+            const { date, start, end, eventName } = event;
+
+            if (!date || !start || !end || !eventName) {
+                return res.status(400).json({ error: 'Missing fields' });
+            }
+
+            if (!/^\d{4}-\d{2}-\d{2}$/.test(date) || !/^\d{2}:\d{2}$/.test(start) || !/^\d{2}:\d{2}$/.test(end)) {
+                return res.status(400).json({ error: 'Invalid date or time format' });
+            }
+
+            const calendarEvent = createEventObject(date, start, end, eventName);
+            const response = await calendar.events.insert({
+                calendarId: process.env.CALENDAR_ID || 'primary', // use specific calendar ID otherwise use primary
+                resource: calendarEvent,
+            });
+
+            createdLinks.push(`<a href="${response.data.htmlLink}">${response.data.htmlLink}</a>`);
+        }
+
+        res.send(`Events created:<br>${createdLinks.join('<br>')}`);
+    } catch (error) {
+        console.error('Error creating event:', error);
+        res.status(500).send('Error creating event');
+    }
+})
+
+function createEventObject(date, start, end, eventName) {
+    return {
+        summary: eventName,
+        description: 'Created with Google Calendar API :D',
+        start: {
+            dateTime: `${date}T${start}:00`,
+            timeZone: 'Pacific/Auckland',
+        },
+        end: {
+            dateTime: `${date}T${end}:00`,
+            timeZone: 'Pacific/Auckland',
+        },
+        colorId: '11' // Tomato colour as default because I like it
+    };
+}
+
 app.get('/create-event', async (req, res) => {
     try {
         oAuth2Client.setCredentials({

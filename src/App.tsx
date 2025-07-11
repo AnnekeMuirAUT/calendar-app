@@ -45,7 +45,7 @@ function App() {
     setRows((prev) => prev.filter((row) => row.id !== id));
   }
 
-  const handleAddEvent = () => {
+  function handleAddEvent() {
     const newEvent: EventData = {
       id: nextId.current,
       date: date,
@@ -60,8 +60,29 @@ function App() {
     setEventName("");
     setRows((prev) => [...prev, newEvent]);
     nextId.current += 1; // increment the id counter
-  };
+  }
 
+  async function handleCreateEvents() {
+    const response = await fetch("http://localhost:5000/create-events", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        events: rows,
+      }),
+    });
+
+    if (!response.ok) {
+      console.error("Failed to create events");
+      return;
+    }
+
+    setRows([]); // clear the table after creating events
+    const htmlMessage = await response.text();
+    // display the response message in the result div
+    document.getElementById("result")!.innerHTML = htmlMessage;
+  }
   return (
     <>
       <div className="content">
@@ -141,9 +162,14 @@ function App() {
           </Table>
         </TableContainer>
         <br />
-        <Button variant="contained" startIcon={<EditCalendarIcon />}>
+        <Button
+          variant="contained"
+          startIcon={<EditCalendarIcon />}
+          onClick={handleCreateEvents}
+        >
           Create events
         </Button>
+        <div id="result"></div>
       </div>
     </>
   );
